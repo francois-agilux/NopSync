@@ -1,0 +1,10 @@
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\BasicNopSync.exe
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\BasicNopSync.exe.config
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\log4net.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\MercatorComponents.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\MercatorORM.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\MercatorTunnel.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\MercatorUi.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\Newtonsoft.Json.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\System.Net.Http.Formatting.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\BasicNopSync\bin\Debug\System.Web.Http.dll

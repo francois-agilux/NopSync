@@ -1,0 +1,8 @@
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\bin\Debug\DatabaseSettingsCustomAction.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\bin\Debug\DatabaseSettingsCustomAction.CA.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\bin\Debug\DatabaseSettingsCustomAction.pdb
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\bin\Debug\Microsoft.Deployment.WindowsInstaller.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\bin\Debug\Microsoft.Deployment.WindowsInstaller.xml
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\obj\x86\Debug\DatabaseSettingsCustomAction.csprojResolveAssemblyReference.cache
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\obj\x86\Debug\DatabaseSettingsCustomAction.dll
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\DatabaseSettingsCustomAction\obj\x86\Debug\DatabaseSettingsCustomAction.pdb

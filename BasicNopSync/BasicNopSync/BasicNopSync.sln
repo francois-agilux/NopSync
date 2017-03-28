@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicNopSync", "BasicNopSync\BasicNopSync.csproj", "{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MercatorORM", "..\..\MercatorORM\MercatorORM.csproj", "{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC10D78F-182A-4DFD-9206-D62FFBAA4C30}.Release|x86.Build.0 = Release|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Debug|x86.Build.0 = Debug|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{BFC7855A-E8B0-4DA9-9CCE-DE1DB4A2F2BD}.Release|x86.Build.0 = Release|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Debug|x86.Build.0 = Debug|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Release|x86.ActiveCfg = Release|Any CPU
+		{2CB88A3B-963C-4DEE-A12D-A08FCAACAAAA}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://agilux.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ..\\..\\MercatorORM\\MercatorORM.csproj
+		SccProjectName1 = ../../PasserelleLolifant/Passerelle/MercatorORM
+		SccLocalPath1 = ..\\..\\MercatorORM
+		SccProjectUniqueName2 = BasicNopSync\\BasicNopSync.csproj
+		SccProjectName2 = BasicNopSync
+		SccLocalPath2 = BasicNopSync
+		SccProjectUniqueName3 = Tests\\Tests.csproj
+		SccProjectName3 = Tests
+		SccLocalPath3 = Tests
+	EndGlobalSection
+EndGlobal

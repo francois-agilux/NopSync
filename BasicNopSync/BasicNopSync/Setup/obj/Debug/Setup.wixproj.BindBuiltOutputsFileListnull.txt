@@ -1,0 +1,3 @@
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\cab1.cab
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\NopSync-Setup.msi
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\NopSync-Setup.wixpdb

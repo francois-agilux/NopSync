@@ -1,0 +1,11 @@
+obj\Debug\Product.wixobj
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\cab1.cab
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\NopSync-Setup.msi
+E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\bin\Debug\NopSync-Setup.wixpdb
+obj\Debug\Setup.wixproj.BindContentsFileListnull.txt
+obj\Debug\Setup.wixproj.BindOutputsFileListnull.txt
+obj\Debug\Setup.wixproj.BindBuiltOutputsFileListnull.txt
+obj\Debug\DBSetupDialog.wixobj
+obj\Debug\SetupDialog.wixobj
+obj\Debug\ProgressDialog.wixobj
+obj\Debug\WixUI_Custom_InstallDir.wixobj

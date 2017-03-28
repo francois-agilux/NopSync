@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <!--The custom action DLL itself.-->
+    <Binary Id="WebAppCA"
+            SourceFile="C:\Temp\MvcApplication4a\CustomActions\bin\Debug\CustomActions.CA.dll" />
+
+    <!--The custom action to enumerate the web sites and app pools into the 
+     appropriate combo boxes.-->
+    <CustomAction Id="EnumerateSqlServers"
+                  BinaryKey="WebAppCA"
+                  DllEntry="EnumerateSqlServers"
+                  Execute="immediate"
+                  Return="check" />
+
+    <CustomAction Id="VerifySqlConnection"
+          BinaryKey="WebAppCA"
+          DllEntry="VerifySqlConnection"
+          Execute="immediate"
+          Return="check" />
+
+    <!--Make sure the enumerate web sites and app pools custom action gets 
+    called, but only called if we are doing and install.-->
+    <InstallUISequence>
+      <Custom Action="EnumerateSqlServers"
+              After="CostFinalize"
+              Overridable="yes">NOT Installed</Custom>
+    </InstallUISequence>
+
+
+    <!-- MyWeb UI -->
+    <UI Id="DBSetupDialog">
+
+      <UIRef Id="WixUI_FeatureTree" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+
+      <!-- Injection of custom UI. -->
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DatabaseInformationDlg">LicenseAccepted = "1"</Publish>
+    </UI>
+
+  </Fragment>
+
+  <Fragment>
+    <Binary Id="CustomActionBinary" SourceFile="$(var.DatabaseSettingsCustomAction.TargetDir)$(var.DatabaseSettingsCustomAction.TargetName).CA.dll"/>
+    <CustomAction Id="DatabaseSettingsCustomAction" BinaryKey="CustomActionBinary" DllEntry="SaveDatabaseSettings"  />
+  </Fragment>
+</Wix>

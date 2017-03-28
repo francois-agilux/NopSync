@@ -1,0 +1,11 @@
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorORM.dll.config
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorORM.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorORM.pdb
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\log4net.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorComponents.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorTunnel.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\MercatorUi.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\bin\Release\log4net.xml
+E:\NopCommerce\BasicNopSync\MercatorORM\obj\Release\MercatorORM.dll
+E:\NopCommerce\BasicNopSync\MercatorORM\obj\Release\MercatorORM.pdb
+E:\NopCommerce\BasicNopSync\MercatorORM\obj\Release\MercatorORM.csprojResolveAssemblyReference.cache

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
+  <?define BasicNopSync_TargetDir=$(var.BasicNopSync.TargetDir)?>
+	<Product Id="cc4d8103-130f-4274-af1b-e78be8264171" Name="NopSync" Language="1033" Version="1.0.0.0" Manufacturer="Agilux" UpgradeCode="7482c22d-466e-43dd-a69f-4479a1108240">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    
+    
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+    
+		<Feature Id="ProductFeature" Title="NopSync" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut"/>
+      <ComponentRef Id="ApplicationShortcutDesktop"/>
+		</Feature>
+
+  <!--<Binary Id="sqlBinary"  SourceFile="E:\NopCommerce\BasicNopSync\BasicNopSync\BasicNopSync\Setup\sql.sql" />
+
+  <util:User Id="SQLUser" Name="[SQLUSER]" Password="[SQLPASSWORD]" />    
+      <sql:SqlDatabase Id="SqlDatabase"
+                          Database="[SQLDB]"
+                          Server="[SQLSERVER]"
+                          Instance="[SQLINSTANCE]"
+                          User="SQLUser">        
+      </sql:SqlDatabase>-->
+
+    <UIRef Id="WixUI_InstallDir"/>
+
+    <Property Id="Cancel">cancelbtn</Property>
+
+    <!--<InstallExecuteSequence>
+      <Custom Action='DatabaseSettingsCustomAction' Before='InstallFinalize'>NOT Installed</Custom>
+    </InstallExecuteSequence>-->
+
+    <Property Id='DATABASE_USERNAME'></Property>
+    <Property Id='DATABASE_PASSWORD'></Property>
+    <Property Id='DATABASE_NAME'></Property>
+    <Property Id="DATABASE_SERVER">(local)</Property>
+    <Property Id="DATABASE_LOGON_TYPE">DatabaseIntegratedAuth</Property>
+    <Property Id="USEINTEGRATEDSECURITY" Secure="yes"></Property>
+  </Product>
+
+    <Fragment>    
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="NopSync" />     
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="NopSync"/>
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop"/>
+		</Directory>
+
+      <!--<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />-->
+      <!--<UIRef Id="WixUI_InstallDir"/>-->
+	</Fragment>
+  
+    
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="7e6d9a71-a87f-4e0d-9a09-cf1425a57583">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="NopSync" Description="NopSync" Target="[INSTALLFOLDER]BasicNopSync.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\NopSync" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="2595bfe5-174a-4125-a968-b233b20aa1ca">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="NopSync" Description="NopSync" Target="[INSTALLFOLDER]BasicNopSync.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\NopSync" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!--<Component Id="SqlComponent" Guid="660fc2a1-5a01-42df-bebc-415cae665f03">
+        <sql:SqlScript Id="TestScript" SqlDb="SqlDatabase" ExecuteOnInstall="yes" BinaryKey="sqlBinary" />
+        <CreateFolder/>
+      </Component>-->					
+			<Component Id="BasicNopSync.exe" Guid="8b663ec5-9a42-4b4b-b65e-1225be35da4b">
+			  <File Id="BasicNopSync.exe" Name="BasicNopSync.exe" Source="$(var.BasicNopSync_TargetDir)BasicNopSync.exe" />
+			</Component>
+			<Component Id="BasicNopSync.exe.config" Guid="1e93c53b-772d-4d9c-8310-fc65fc27964e">
+			  <File Id="BasicNopSync.exe.config" Name="BasicNopSync.exe.config" Source="$(var.BasicNopSync_TargetDir)BasicNopSync.exe.config" />
+			</Component>
+			<Component Id="MercatorComponents.dll" Guid="6f8349f0-5f78-41cd-b38b-5f2255e575d2">
+			  <File Id="MercatorComponents.dll" Name="MercatorComponents.dll" Source="$(var.BasicNopSync_TargetDir)MercatorComponents.dll" />
+			</Component>
+			<Component Id="MercatorTunnel.dll" Guid="60e56dc5-c459-4bb5-9271-a9a3c59ebb0d">
+			  <File Id="MercatorTunnel.dll" Name="MercatorTunnel.dll" Source="$(var.BasicNopSync_TargetDir)MercatorTunnel.dll" />
+			</Component>
+			<Component Id="MercatorUi.dll" Guid="6d26bc1c-a5db-4c12-96da-44a8c8c73035">
+			  <File Id="MercatorUi.dll" Name="MercatorUi.dll" Source="$(var.BasicNopSync_TargetDir)MercatorUi.dll" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="29694ac8-a249-42d9-918c-2fce77a00123">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.BasicNopSync_TargetDir)Newtonsoft.Json.dll" />
+			</Component>
+			<Component Id="System.Net.Http.Formatting.dll" Guid="ca32569a-e9b0-48b0-9247-c1860386f5cd">
+			  <File Id="System.Net.Http.Formatting.dll" Name="System.Net.Http.Formatting.dll" Source="$(var.BasicNopSync_TargetDir)System.Net.Http.Formatting.dll" />
+			</Component>
+			<Component Id="System.Web.Http.dll" Guid="1cae767b-2653-4062-9ff3-3f33cac056ae">
+			  <File Id="System.Web.Http.dll" Name="System.Web.Http.dll" Source="$(var.BasicNopSync_TargetDir)System.Web.Http.dll" />
+			</Component>
+			<Component Id="MercatorORM.dll" Guid="05986781-9324-4cb9-b814-e618c4507120">
+			  <File Id="MercatorORM.dll" Name="MercatorORM.dll" Source="$(var.BasicNopSync_TargetDir)MercatorORM.dll" />
+			</Component>
+			<Component Id="log4net.dll" Guid="5b305acb-0a6c-40f9-b30e-c18bf974f19e">
+			  <File Id="log4net.dll" Name="log4net.dll" Source="$(var.BasicNopSync_TargetDir)log4net.dll" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
