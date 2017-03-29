@@ -64,6 +64,7 @@ namespace BasicNopSync.Model.NopCommerce
         public int TaxCategoryId { get; set; }
         public bool IsTelecommunicationsOrBroadcastingOrElectronicServices { get; set; }
         public int ManageInventoryMethodId { get; set; }
+        public int ProductAvailabilityRangeId { get; set; }
         public bool UseMultipleWarehouses { get; set; }
         public int WarehouseId { get; set; }
         public int StockQuantity { get; set; }
@@ -78,6 +79,7 @@ namespace BasicNopSync.Model.NopCommerce
         public int OrderMaximumQuantity { get; set; }
         public string AllowedQuantities { get; set; }
         public bool AllowAddingOnlyExistingAttributeCombinations { get; set; }
+        public bool NotReturnable { get; set; }
         public bool DisableBuyButton { get; set; }
         public bool DisableWishlistButton { get; set; }
         public bool AvailableForPreOrder { get; set; }
@@ -85,10 +87,7 @@ namespace BasicNopSync.Model.NopCommerce
         public bool CallForPrice { get; set; }
         public decimal Price { get; set; }
         public decimal OldPrice { get; set; }
-        public decimal ProductCost { get; set; }
-        public decimal? SpecialPrice { get; set; }
-        public DateTime? SpecialPriceStartDateTimeUtc { get; set; }
-        public DateTime? SpecialPriceEndDateTimeUtc { get; set; }
+        public decimal ProductCost { get; set; }        
         public bool CustomerEntersPrice { get; set; }
         public decimal MinimumCustomerEnteredPrice { get; set; }
         public decimal MaximumCustomerEnteredPrice { get; set; }
@@ -176,6 +175,7 @@ namespace BasicNopSync.Model.NopCommerce
             TaxCategoryId= 0;
             IsTelecommunicationsOrBroadcastingOrElectronicServices = false;
             ManageInventoryMethodId = 1;
+            ProductAvailabilityRangeId = 0;
             UseMultipleWarehouses = false;
             WarehouseId = 0;            
             DisplayStockAvailability = true;
@@ -189,12 +189,12 @@ namespace BasicNopSync.Model.NopCommerce
             OrderMinimumQuantity = 1;
             OrderMaximumQuantity = 50000;
             AllowAddingOnlyExistingAttributeCombinations = false;
+            NotReturnable = false;
             DisableBuyButton = false;
             DisableWishlistButton = false;
             AvailableForPreOrder = false;
             CallForPrice = false;            
-            OldPrice = 0;            
-            SpecialPrice = null;
+            OldPrice = 0;                        
             ProductCost = 0;
             CustomerEntersPrice = false;
             MinimumCustomerEnteredPrice = 0;

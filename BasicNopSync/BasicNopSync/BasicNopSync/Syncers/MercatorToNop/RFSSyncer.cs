@@ -8,6 +8,7 @@ using BasicNopSync.Model.NopCommerce;
 using BasicNopSync.Model.Mercator;
 using BasicNopSync.Syncers.MercatorToNop;
 using BasicNopSync.OData;
+using MercatorORM;
 
 namespace BasicNopSync.Syncers.MercatorToNop
 {
@@ -15,10 +16,13 @@ namespace BasicNopSync.Syncers.MercatorToNop
     {   
         public const string ENTITY = "Category";
         public const string KEY_MERCATORID = "MercatorId";
+        private bool useGenericArticle = false;
 
         public RFSSyncer() : base()
         {
             urlBuilder = new UrlBuilder(ENTITY);
+            OptionsMercator om = new OptionsMercator();
+            useGenericArticle = om.GetOptionValue("NOP_GEN_A")?.ToString()?.TrimEnd() == "1";
         }
 
 
@@ -173,6 +177,13 @@ namespace BasicNopSync.Syncers.MercatorToNop
 
                 foreach (int i in toDelete)
                 {
+                    //If cat has a genericattribute with the lvl, it comes from mercator. If it does not come from Mercator, don't delete it
+                    if (useGenericArticle)
+                    {   
+                        JToken[] fromMercator = ParserJSon.ParseResultToJTokenList(WebService.Get(new UrlBuilder(WebApiEntities.GENERIC_ATTRIBUTE).FilterEq("KeyGroup",ENTITY).FilterEq("Key",KEY_MERCATORID).FilterEq("EntityId",i).BuildQuery()));
+                        if (fromMercator.Length == 0)
+                            continue;
+                    }
                     //Deactivate the deleted category and delete corresponding urlRecord
                     //Instead of published : false => Delete : false ou vraiment la supprimer ? 
                     //WebService.Patch(wsCategoryMapping + "(" + s + ")", "{\"Published\":false}");

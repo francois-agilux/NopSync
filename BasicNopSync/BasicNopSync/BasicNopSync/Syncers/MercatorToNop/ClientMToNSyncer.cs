@@ -217,13 +217,17 @@ namespace BasicNopSync.Syncers.NopToMercator
             int addressId = (int)newAddress["Id"];
 
 
-            string clientJson = ParserJSon.ParseClientToJson(c.C_EMAIL.TrimEnd(), DateTimeOffset.Now, password,/*mercatorPrefix+*/ c.C_ID.TrimEnd(), c.C_MODIFTAG).ToString();
+            string clientJson = ParserJSon.ParseClientToJson(c.C_EMAIL.TrimEnd(), c.C_ID.TrimEnd(), c.C_MODIFTAG).ToString();
 
             string clientResult = WebService.Post(ENTITY, clientJson);
 
             JObject newCli = JObject.Parse(clientResult);
             int id = (int)newCli["Id"];
             c.C_ID_WEB = id;
+
+            //Password
+            JObject clientPassword = ParserJSon.ParseClientPassword(c.C_ID.TrimEnd(), int.Parse(newCli["Id"].ToString()));
+            WebService.Post(WebApiEntities.CUSTOMER_PASSWORD, clientPassword.ToString());
 
             //Add TVA Number (if not_empty)
             //VatNumberStatudId : 10 = empty, 20 = valid

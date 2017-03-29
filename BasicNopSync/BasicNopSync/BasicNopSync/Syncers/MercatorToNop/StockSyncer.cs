@@ -20,8 +20,10 @@ namespace BasicNopSync.Syncers.MercatorToNop
     {   
         private static int count = 0;
         private OptionsMercator OptionsMercator;
+        private OptionsMercator omGenArt;
         decimal lastUpdate = 0;
         string whereClause = "";
+        bool useGenericArticle = false;
 
         public const string JOIN_CLAUSE = "dispo on s_id = id_stock ";
         public const string WHERE_CLAUSE = "S_WEB = 1 and S_SOMMEIL = 0 and S_ID_RAYON <> '' and S_MODELE <> '' and S_MODIFTAG > {0} and dispo.id_magasin = '0000000001'";
@@ -38,12 +40,14 @@ namespace BasicNopSync.Syncers.MercatorToNop
         {            
             pic = new Picture();
             OptionsMercator = new OptionsMercator();
+            omGenArt = new OptionsMercator();
             urlBuilder = new UrlBuilder(ENTITY);
             //Category mapping
             Categories = RFSSyncer.GetMapIdNopId();
-            count = 0;
-            lastUpdate = Convert.ToDecimal(OptionsMercator.GetOptionValue("NOP_MDFTAG"));
+            count = 0;            
             whereClause = String.Format(WHERE_CLAUSE, lastUpdate);
+            useGenericArticle = omGenArt.GetOptionValue("NOP_GEN_A")?.ToString()?.TrimEnd() == "1";
+            lastUpdate = Convert.ToDecimal(OptionsMercator.GetOptionValue("NOP_MDFTAG"));
         }
 
         /// <summary>
@@ -257,8 +261,12 @@ namespace BasicNopSync.Syncers.MercatorToNop
 
                 //Post everything
                 Console.WriteLine("Envoi des produits");
-                addedProductsResult = WebService.Post(urlBuilder.BuildQueryFct("AddProducts"), container.ToString());
 
+                //The POST will return a dictionary of entity ids as keys and the values as following:
+                //If new product : value = [SKU]
+                //If update: value = UPDATED+[SKU]
+                addedProductsResult = WebService.Post(urlBuilder.BuildQueryFct("AddProducts"), container.ToString());
+                
                 addedProductsResultO = JObject.Parse(addedProductsResult);
 
                 Console.WriteLine("Produits synchros");
@@ -272,15 +280,34 @@ namespace BasicNopSync.Syncers.MercatorToNop
 
                     foreach (var j in addedProductsResultO)
                     {
-                        STOCK s = stocks.Where(x => x.S_ID.TrimEnd() == j.Value.ToString()).FirstOrDefault();
+                        if (!j.Value.ToString().StartsWith("UPDATED"))
+                        {
+                            //Product added : we add an url and generic attributes
+                            STOCK s = stocks.Where(x => x.S_ID.TrimEnd() == j.Value.ToString()).FirstOrDefault();
+                            string url = UrlsSyncer.BuildProductUrl(s, connection);
+                            JObject urlJSon = ParserJSon.GetUrlRecordJson(ENTITY, Int32.Parse(j.Key), url);
+                            JObject genericAttribute = ParserJSon.GetGenericAttributeJSon(Int32.Parse(j.Key), ENTITY, KEY_MODIFTAG, s.S_MODIFTAG.ToString());
+                            JObject genericAttributeMercator = ParserJSon.GetGenericAttributeJSon(Int32.Parse(j.Key), ENTITY, KEY_MERCATORID, s.S_ID.TrimEnd());
 
-                        string url = UrlsSyncer.BuildProductUrl(s, connection);
-                        JObject urlJSon = ParserJSon.GetUrlRecordJson(ENTITY, Int32.Parse(j.Key), url);
-                        JObject genericAttribute = ParserJSon.GetGenericAttributeJSon(Int32.Parse(j.Key), ENTITY, KEY_MODIFTAG, s.S_MODIFTAG.ToString());
-
-                        urlList.Add(urlJSon);
-                        genericAttributeList.Add(genericAttribute);
+                            urlList.Add(urlJSon);
+                            genericAttributeList.Add(genericAttribute);
+                            genericAttributeList.Add(genericAttributeMercator);
+                        }
+                        else
+                        {
+                            //product updated : we update its modiftag
+                            string mercatorId = j.Value.ToString().Split('+').Last();
+                            STOCK s = stocks.Where(x => x.S_ID.TrimEnd() == mercatorId).FirstOrDefault();
+                            JToken[] result = ParserJSon.ParseResultToJTokenList(WebService.Get(new UrlBuilder("GenericAttribute").FilterEq("KeyGroup", "Product").FilterEq("Key","Modiftag").FilterEq("EntityId", Int32.Parse(j.Key)).BuildQuery()));
+                            if (result.Length > 0)
+                            {
+                                JObject genericAttribute = ParserJSon.GetGenericAttributeJSon(Int32.Parse(j.Key), ENTITY, KEY_MODIFTAG, s.S_MODIFTAG.ToString(),(int)result[0]["Id"]);
+                                genericAttributeList.Add(genericAttribute);
+                            }
+                        }
                     }
+
+
 
                     JObject urlContainer = new JObject();
                     JObject gaContainer = new JObject();
@@ -363,13 +390,19 @@ namespace BasicNopSync.Syncers.MercatorToNop
         /// <param name="reappro"></param>
         private void DeleteProducts(SqlConnection connection, List<ProductDatas> productsMIdMtag)
         {
+            List<int> toEject = new List<int>();
             Console.WriteLine("Suppression produits...");
-            //First gather products that were created on the website and have no MercatorId
-            string jsonNoSkus = WebService.Get(urlBuilder
-                .Select("Id", "Sku", "Published")
-                .FilterEq("Sku", null)
-                .BuildQuery());
-            JToken[] productsNoSku = ParserJSon.ParseResultToJTokenList(jsonNoSkus);
+
+            if (!useGenericArticle)
+            {
+                string allIdsResult = WebService.Get(urlBuilder.Select("Id").FilterEq("Published", true).FilterEq("Deleted", false).BuildQuery());
+                JToken[] allIds = ParserJSon.ParseResultToJTokenList(allIdsResult);
+                
+                //First gather products that were created on the website and have no MercatorId
+                List<int> createdOnNop = allIds.Select(x=>(int)x["Id"]).Except(productsMIdMtag.Select(y => y.Id).ToList()).ToList();
+
+                toEject.AddRange(createdOnNop);
+            }            
 
             //Then, get the mercator products that are supposed to be on the website
             List<STOCK> prodList = new List<STOCK>();
@@ -384,9 +417,7 @@ namespace BasicNopSync.Syncers.MercatorToNop
             List<int> existsInNop = productsMIdMtag.Where(x => all_stocks_ids.Any(y => y == x.MercatorId)).Select(z => z.Id).ToList();
 
             //If some are on Nop but not in the prodList from Mercator, we mark them as deleted
-            List<int> toEject = productsMIdMtag.Select(x => x.Id).Except(existsInNop).ToList();
-			//We also add the product that were created on the website (Tournesols products don't have any sku)
-            toEject.AddRange(productsNoSku.Select(x => (int)x["Id"]));
+            toEject.AddRange(productsMIdMtag.Select(x => x.Id).Except(existsInNop).ToList());			            
 
             if (toEject.Count() > 0)
             {
@@ -722,24 +753,33 @@ namespace BasicNopSync.Syncers.MercatorToNop
                                                     .BuildQuery());                
             JToken[] gaModiftagIdsValues = ParserJSon.ParseResultToJTokenList(jsonModiftagIds);
 
-			if(gaModiftagIdsValues.Length == 0)
+            string jsonMercatorIds = WebService.Get(new UrlBuilder("GenericAttribute")
+                                                    .FilterEq("KeyGroup", ENTITY)
+                                                    .FilterEq("Key", KEY_MERCATORID)
+                                                    .BuildQuery());
+            JToken[] gaMercatorIdsValues = ParserJSon.ParseResultToJTokenList(jsonMercatorIds);
+
+            if (gaModiftagIdsValues.Length == 0)
             {
                 return new List<ProductDatas>();
             }
-            var productsMIds = from p in products
-                        join merc in gaModiftagIdsValues on p["Id"] equals merc["EntityId"]                                                
-                        into z
-                        from q in z.DefaultIfEmpty()                                    
-                        select new { Id = p["Id"], Published = p["Published"], MercatorId = p["Sku"], Modiftag = q["Value"] };
+            var productDatas = from p in products
+                               join mdft in gaModiftagIdsValues on p["Id"] equals mdft["EntityId"]
+                               into z
+                               join merc in gaMercatorIdsValues on p["Id"] equals merc["EntityId"]
+                               into w
+                               from q in z
+                               from r in w
+                               select new ProductDatas { Id = (int)p["Id"], Published = (bool)p["Published"], MercatorId = r["Value"].ToString(), Modiftag = (int)q["Value"] };
 
-            var productsDatas = from p in productsMIds
-                           join modif in gaModiftagIdsValues on p.Id equals modif["EntityId"]
-                        into z
-                        from q in z.DefaultIfEmpty()
-                        select new ProductDatas { Id = (int)p.Id, Published = (bool)p.Published, MercatorId = p.MercatorId.ToString(), Modiftag = (int)q["Value"] };
+            //var productsDatas = from p in productsMIds
+            //               join modif in gaModiftagIdsValues on p.Id equals modif["EntityId"]
+            //            into z
+            //            from q in z.DefaultIfEmpty()
+            //            select new ProductDatas { Id = (int)p.Id, Published = (bool)p.Published, MercatorId = p.MercatorId.ToString(), Modiftag = (int)q["Value"] };
 
             //return map;
-            return productsDatas.ToList();
+            return productDatas.ToList();
         }
 
         private bool IsProductToUpdate(STOCK s, List<ProductDatas> productsMIdMtag)

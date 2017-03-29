@@ -49,6 +49,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.boxGenericArticle = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // errorLabel
@@ -76,7 +77,7 @@
             this.lblClientId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblClientId.AutoSize = true;
-            this.lblClientId.Location = new System.Drawing.Point(8, 191);
+            this.lblClientId.Location = new System.Drawing.Point(8, 215);
             this.lblClientId.Name = "lblClientId";
             this.lblClientId.Size = new System.Drawing.Size(68, 13);
             this.lblClientId.TabIndex = 6;
@@ -87,7 +88,7 @@
             this.lblClientSecret.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblClientSecret.AutoSize = true;
-            this.lblClientSecret.Location = new System.Drawing.Point(8, 230);
+            this.lblClientSecret.Location = new System.Drawing.Point(8, 254);
             this.lblClientSecret.Name = "lblClientSecret";
             this.lblClientSecret.Size = new System.Drawing.Size(63, 13);
             this.lblClientSecret.TabIndex = 7;
@@ -98,7 +99,7 @@
             this.redirectUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.redirectUrl.AutoSize = true;
-            this.redirectUrl.Location = new System.Drawing.Point(8, 269);
+            this.redirectUrl.Location = new System.Drawing.Point(8, 293);
             this.redirectUrl.Name = "redirectUrl";
             this.redirectUrl.Size = new System.Drawing.Size(57, 13);
             this.redirectUrl.TabIndex = 8;
@@ -108,7 +109,7 @@
             // 
             this.txtPublicToken.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPublicToken.Location = new System.Drawing.Point(11, 207);
+            this.txtPublicToken.Location = new System.Drawing.Point(11, 231);
             this.txtPublicToken.Name = "txtPublicToken";
             this.txtPublicToken.Size = new System.Drawing.Size(363, 20);
             this.txtPublicToken.TabIndex = 9;
@@ -117,7 +118,7 @@
             // 
             this.txtSecretToken.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSecretToken.Location = new System.Drawing.Point(11, 246);
+            this.txtSecretToken.Location = new System.Drawing.Point(11, 270);
             this.txtSecretToken.Name = "txtSecretToken";
             this.txtSecretToken.Size = new System.Drawing.Size(363, 20);
             this.txtSecretToken.TabIndex = 10;
@@ -126,7 +127,7 @@
             // 
             this.txtStoreAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtStoreAddress.Location = new System.Drawing.Point(11, 285);
+            this.txtStoreAddress.Location = new System.Drawing.Point(11, 309);
             this.txtStoreAddress.Name = "txtStoreAddress";
             this.txtStoreAddress.Size = new System.Drawing.Size(365, 20);
             this.txtStoreAddress.TabIndex = 11;
@@ -135,7 +136,7 @@
             // 
             this.btnCancel.AllowDrop = true;
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCancel.Location = new System.Drawing.Point(11, 318);
+            this.btnCancel.Location = new System.Drawing.Point(11, 342);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(65, 23);
             this.btnCancel.TabIndex = 15;
@@ -147,7 +148,7 @@
             // 
             this.txtUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUser.Location = new System.Drawing.Point(11, 168);
+            this.txtUser.Location = new System.Drawing.Point(11, 192);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(363, 20);
             this.txtUser.TabIndex = 8;
@@ -157,7 +158,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 152);
+            this.label1.Location = new System.Drawing.Point(8, 176);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 13);
             this.label1.TabIndex = 13;
@@ -166,7 +167,7 @@
             // btnNext
             // 
             this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.Location = new System.Drawing.Point(302, 318);
+            this.btnNext.Location = new System.Drawing.Point(302, 342);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 23);
             this.btnNext.TabIndex = 12;
@@ -239,22 +240,32 @@
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 127);
+            this.label3.Location = new System.Drawing.Point(8, 151);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(143, 13);
             this.label3.TabIndex = 22;
             this.label3.Text = "NOPCOMMERCE : WEBAPI";
+            // 
+            // boxGenericArticle
+            // 
+            this.boxGenericArticle.AutoSize = true;
+            this.boxGenericArticle.Location = new System.Drawing.Point(11, 114);
+            this.boxGenericArticle.Name = "boxGenericArticle";
+            this.boxGenericArticle.Size = new System.Drawing.Size(182, 17);
+            this.boxGenericArticle.TabIndex = 23;
+            this.boxGenericArticle.Text = "Utilisation des articles génériques";
+            this.boxGenericArticle.UseVisualStyleBackColor = true;
             // 
             // Install
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(384, 352);
+            this.ClientSize = new System.Drawing.Size(384, 376);
+            this.Controls.Add(this.boxGenericArticle);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnBrowse);
@@ -309,6 +320,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.CheckBox boxGenericArticle;
     }
 }
 

@@ -18,6 +18,7 @@ namespace BasicNopSync.Syncers.MercatorToNop
     {
         private const string formatCatStckType = "NOP_CSTCK{0}";
         private Dictionary<int, string> catStckTypes;
+        private bool useGenericArticle = false;
 
         private const string ENTITY = "SpecificationAttribute";
         private const string KEY_TYPE = "Type";
@@ -25,6 +26,8 @@ namespace BasicNopSync.Syncers.MercatorToNop
         public SCatSyncer() : base()
         {
             urlBuilder = new UrlBuilder(ENTITY);
+            OptionsMercator om = new OptionsMercator();
+            useGenericArticle = om.GetOptionValue("NOP_GEN_A")?.ToString()?.TrimEnd() == "1";
         }
 
         public override bool Sync()
@@ -48,8 +51,7 @@ namespace BasicNopSync.Syncers.MercatorToNop
             SyncCatStckTypes(catStckTypes);
             #endregion
 
-
-            //Get Stock From Mercator where "Vente En Ligne" is setted
+            
             using (SqlConnection connection = new SqlConnection(dataSettings.DataConnectionString))
             {
                 connection.Open();
@@ -138,7 +140,18 @@ namespace BasicNopSync.Syncers.MercatorToNop
             IEnumerable<int> idsExisting = specAtts.Select(x => (int)x["Id"]);
             IEnumerable<int> toDelete = idsExisting.Except(toKeep);
 
-            toDelete.ToList().ForEach(x => WebService.Delete(urlBuilder.Id(x).BuildQuery()));
+            foreach(int id in toDelete)
+            {
+                //If cat has a genericattribute with the lvl, it comes from mercator. If it does not come from Mercator, don't delete it
+                if (useGenericArticle)
+                {
+                    JToken[] fromMercator = ParserJSon.ParseResultToJTokenList(WebService.Get(new UrlBuilder(WebApiEntities.GENERIC_ATTRIBUTE).FilterEq("KeyGroup", ENTITY).FilterEq("Key", KEY_TYPE).FilterEq("EntityId", id).BuildQuery()));
+                    if (fromMercator.Length == 0)
+                        continue;
+                }
+
+                WebService.Delete(urlBuilder.Id(id).BuildQuery());
+            }            
         }
 
         public void SyncSpecAttOps(IDictionary<String, int> attSpecOp, List<int> specsToKeep, int catStockTypeId, int specAttId)

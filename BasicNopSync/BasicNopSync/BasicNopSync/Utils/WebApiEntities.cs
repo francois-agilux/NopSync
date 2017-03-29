@@ -10,7 +10,8 @@ namespace BasicNopSync.Utils
     class WebApiEntities
     {
         
-        public static readonly string ADDRESS = "Address";               
+        public static readonly string ADDRESS = "Address";
+        public static readonly string CUSTOMER_PASSWORD = "CustomerPassword";
         public static readonly string GENERIC_ATTRIBUTE = "GenericAttribute";        
         public static readonly string PRODUCT_CATEGORIES = "ProductCategories";
         public static readonly string PRODUCT_PICTURES = "ProductPictures";

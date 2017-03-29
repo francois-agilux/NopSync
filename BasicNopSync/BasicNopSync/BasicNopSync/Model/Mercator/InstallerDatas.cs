@@ -12,6 +12,7 @@ namespace BasicNopSync.Model.Mercator
         public string RepMercator { get; set; }
         public string JournalMercator { get; set; }
         public string ConnectionString { get; set; }
+        public bool UseGenericArticles { get; set; }
 
         public AuthParameters authParameters { get; set; }
 

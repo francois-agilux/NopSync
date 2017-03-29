@@ -89,7 +89,7 @@ namespace BasicNopSync
         private static string insertDefaultCountryIntoOptions = @"INSERT INTO [dbo].[OPTIONS] (TYPE,VALEUR,STEM,LIBELLE_F) values ('NOP_PAYS','Belgium','PARAMS','Pays par défaut client nopCommerce')";
         private static string insertIDLivIntoOptions = @"INSERT INTO [dbo].[OPTIONS] (TYPE,VALEUR,STEM,LIBELLE_F) values ('NOP_LIV_ID','0','PARAMS','Article frais de livraison')";
         private static string insertDefaultTarifIntoOptions = @"INSERT INTO [dbo].[OPTIONS] (TYPE,VALEUR,STEM,LIBELLE_F) values ('NOP_TARIF','1','PARAMS','Tarif par défaut des clients nopCommerce')";
-
+        private static string insertUseOfGenericArticleOptions = @"INSERT INTO[dbo].[OPTIONS] (TYPE,VALEUR,STEM,LIBELLE_F) values('NOP_GEN_A','0','PARAMS','Indique si le site utilise les articles génériques')";
         #region script insert Pays
         private static string insertPays = @"
                     insert into PAYS (ISO,NOM_F) values ('AD','Andorre')
@@ -416,21 +416,27 @@ namespace BasicNopSync
                     Program.log("Inserting default tarif option failed");
                 if (!ExecuteQuery(insertIDLivIntoOptions, true))
                     Program.log("Inserting id liv option failed");
+                if (!ExecuteQuery(insertUseOfGenericArticleOptions, install.UseGenericArticles))
+                    Program.log("Inserting generic attribute option failed");
                 if (!ExecuteQuery(insertPays, true))
-                    Program.log("Inserting Pays values failed");
+                    Program.log("Inserting Pays values failed");                
 
-				SaveAuthModelInDB(install);
+                SaveAuthModelInDB(install);
 
                 OptionsMercator repMerc = new OptionsMercator();
                 OptionsMercator journal = new OptionsMercator();
+                OptionsMercator genericArticle = new OptionsMercator();
 
                 string repMercValue = repMerc.GetOptionValue("NOP_REP_M").ToString();
                 string journalValue = journal.GetOptionValue("NOP_JOURN").ToString();
+                string genericArticleValue = genericArticle.GetOptionValue("NOP_GEN_A")?.ToString()?.TrimEnd();
 
                 if (install.RepMercator != repMercValue)
                     repMerc.SetOptionValue("NOP_REP_M", install.RepMercator);
                 if (install.JournalMercator != journalValue)
                     journal.SetOptionValue("NOP_JOURN", install.JournalMercator);
+                if ((install.UseGenericArticles == true) != (genericArticleValue == "1"))
+                    journal.SetOptionValue("NOP_GEN_A", genericArticleValue == "1");
 
                 progressBar.PerformStep();
                 Program.log("Install terminée");

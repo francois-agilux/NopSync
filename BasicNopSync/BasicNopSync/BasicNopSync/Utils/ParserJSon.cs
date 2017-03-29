@@ -266,8 +266,31 @@ namespace BasicNopSync.Utils
             jo.Add("Quantity", 1);
             jo.Add("Remise", remise);
             jo.Add("Price", price);
-            //string json = "{\"ProductId\":"+productId+",\"StoreId\":0,\"CustomerRoleId\":"+customerRoleId+",\"Quantity\":1,\"Price\":"+price+"}";
-            //checkJson(json);
+            
+            return jo;
+        }
+
+        /// <summary>
+        /// Return the json string mapping a product and a tarif
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="customerRoleId"></param>
+        /// <param name="price"></param>
+        /// <returns></returns>
+        public static JObject GetTierPriceJson(int customerRoleId, double price, DateTimeOffset begin, DateTimeOffset end, int productId = 0)
+        {
+            JObject jo = new JObject();
+            if (productId != 0)
+            {
+                jo.Add("ProductId", productId);
+            }
+            jo.Add("StoreId", 0);
+            jo.Add("CustomerRoleId", customerRoleId);
+            jo.Add("Quantity", 1);
+            jo.Add("Price", price);
+            jo.Add("StartDateTimeUtc", begin);
+            jo.Add("EndDateTimeUtc", end);
+
             return jo;
         }
 
@@ -363,7 +386,7 @@ namespace BasicNopSync.Utils
         /// <param name="productId"></param>
         /// <param name="attributeId"></param>
         /// <returns></returns>
-        public static JObject ParseArtLien1ToProductVariantAttribute(int attributeId, int productId = 0)
+        public static JObject ParseArtLienToProductAttribute(int attributeId, int productId = 0)
         {
             JObject jo = new JObject();
             if (productId != 0)
@@ -375,8 +398,7 @@ namespace BasicNopSync.Utils
             jo.Add("IsRequired", false);
             jo.Add("AttributeControlTypeId", 50);
             jo.Add("DisplayOrder", 0);
-            //string json = "{\"ProductId\":" + productId + ",\"ProductAttributeId\":" + attributeId + ",\"TextPrompt\":\"null\",\"IsRequired\":false,\"AttributeControlTypeId\":50,\"DisplayOrder\":0}";
-            //checkJson(json);
+            
             return jo;
         }
 
@@ -387,7 +409,7 @@ namespace BasicNopSync.Utils
         /// <param name="name"></param>
         /// <param name="price"></param>
         /// <returns></returns>
-        public static JObject ParseArtLien1ToProductVariantAttributeValue(/*string productAttributeId, */string name, double price)
+        public static JObject ParseArtLienToProductAttributeValue(/*string productAttributeId, */string name, double price)
         {
             JObject jo = new JObject();
             jo.Add("AttributeValueTypeId", 0);
@@ -400,10 +422,7 @@ namespace BasicNopSync.Utils
             jo.Add("IsPreSelected", true);
             jo.Add("DisplayOrder", 0);
             jo.Add("PictureId", 0);
-
-            //string json = "{\"ProductAttributeMappingId\":" + productAttributeId + ",\"AttributeValueTypeId\":0,\"AssociatedProductId\":0,\"Name\":\""+name+"\",\"PriceAdjustment\":" + price + ",";
-            //json += "\"WeightAdjustment\":0.0000,\"Cost\":0.0000,\"Quantity\":0,\"IsPreSelected\":true,\"DisplayOrder\":0,\"PictureId\":0}";
-            //checkJson(json);
+            
             return jo;
         }
 
@@ -416,12 +435,8 @@ namespace BasicNopSync.Utils
         /// <param name="email"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static JObject ParseClientToJson(string email, DateTimeOffset date, string password, string mercatorId, decimal modiftag)
-        {
-            string salt = "";                        
-            salt = PasswordManagement.CreateSaltKey(6);            
-            password = PasswordManagement.HashPassword(password.TrimEnd(), salt);
-           
+        public static JObject ParseClientToJson(string email, string mercatorId, decimal modiftag)
+        {   
             JObject jo = new JObject();
             jo.Add("Username", email);
             jo.Add("Email", email);
@@ -429,18 +444,42 @@ namespace BasicNopSync.Utils
             jo.Add("AffiliateId", 0);
             jo.Add("VendorId", 0);
             jo.Add("HasShoppingCartItems", false);
+            jo.Add("RequireReLogin", false);
+            jo.Add("FailedLoginAttempts", 0);
             jo.Add("Active", true);
             jo.Add("Deleted", false);
             jo.Add("IsSystemAccount", false);
-            jo.Add("CreatedOnUtc", date);
-            jo.Add("LastActivityDateUtc", date);
-            jo.Add("Password", password);
-            jo.Add("PasswordSalt", salt);
-            jo.Add("PasswordFormatId", 1);            
+            jo.Add("CreatedOnUtc", DateTimeOffset.Now);
+            jo.Add("LastActivityDateUtc", DateTimeOffset.Now);
+            jo.Add("RegisteredInStoreId", 0);            
             
             return jo;
         }
-        
+
+        /// <summary>
+        /// Parse a client password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        public static JObject ParseClientPassword(string password, int customerId)
+        {
+            string salt = "";
+            salt = PasswordManagement.CreateSaltKey(6);
+            password = PasswordManagement.HashPassword(password.TrimEnd(), salt);
+
+            JObject jo = new JObject();
+
+            jo.Add("CustomerId", customerId);
+            jo.Add("Password", password);
+            jo.Add("PasswordSalt", salt);
+            jo.Add("PasswordFormatId", 1);
+            jo.Add("CreatedOnUtc", DateTimeOffset.Now);
+
+            return jo;
+        }
+
+
         /// <summary>
         /// Parse data to add a VAT Number to a client into Json strings
         /// </summary>
@@ -487,7 +526,7 @@ namespace BasicNopSync.Utils
             
         }
 
-        public static JObject GetGenericAttributeJSon(int entityId, string keygroup, string key, string value, int storeId = 0)
+        public static JObject GetGenericAttributeJSon(int entityId, string keygroup, string key, string value, int id = 0, int storeId = 0)
         {
             JObject json = new JObject();
             json.Add("EntityId", entityId);
@@ -495,6 +534,8 @@ namespace BasicNopSync.Utils
             json.Add("Key", key);
             json.Add("Value", value);
             json.Add("StoreId", storeId);
+            if (id > 0)
+                json.Add("Id", id);
 
             return json;
         }

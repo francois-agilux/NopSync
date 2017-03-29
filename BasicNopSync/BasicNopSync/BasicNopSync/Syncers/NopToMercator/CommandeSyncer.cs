@@ -24,6 +24,7 @@ namespace BasicNopSync.Syncers.NopToMercator
         //TODO Mettre dans config au début
         private static string directory;
         private static string journal;
+        private bool useGenericArticle;
         private const string REF_WEB = "WEB";
 
         public const string ENTITY = "Order";
@@ -38,6 +39,10 @@ namespace BasicNopSync.Syncers.NopToMercator
 
             OptionsMercator journalOption = new OptionsMercator();
             journal = journalOption.GetOptionValue("NOP_JOURN").ToString();
+
+            OptionsMercator genericArticle = new OptionsMercator();
+            useGenericArticle = genericArticle.GetOptionValue("NOP_GEN_A")?.ToString()?.TrimEnd() == "1";
+
         }
 
         public override bool Sync()
@@ -121,18 +126,52 @@ namespace BasicNopSync.Syncers.NopToMercator
 	
 	                                            foreach (JToken i in items)
 	                                            {
-	                                                //Get product ids by SKU (Nop's SKU = S_CLE_1)
-	                                                JObject o = JObject.Parse(WebService.Get(new UrlBuilder("Product").Id((int)i["ProductId"]).Select("Sku").BuildQuery()));
-	                                                string sku = o["Sku"].ToString();
-	
-	                                                int index = be.AppendLine();
-	                                                //get from db stock using cle_1 then Add ID
-	                                                be.InsertItem(sku, index, 1);
-	
-	                                                //Use price/vat used when the order was placed : might have been some changes in Mercator since then
-	                                                be.LIGNES.Rows[index]["Q"] = i["Quantity"].Value<Double>() /** condit*/ ;
-	                                                be.LIGNES.Rows[index]["PU"] = i["UnitPriceExclTax"].Value<Decimal>();/* * (1 + (i["Remise"].Value<Decimal>() / 100));*/
-	                                            }
+                                                    JToken[] o = ParserJSon.ParseResultToJTokenList(WebService.Get(new UrlBuilder(WebApiEntities.GENERIC_ATTRIBUTE).FilterEq("KeyGroup", "Product").FilterEq("Key", "MercatorId").FilterEq("EntityId", i["ProductId"]).BuildQuery()));
+
+                                                    string mercatorId = o.FirstOrDefault()?["Value"]?.ToString();
+
+                                                    int index = be.AppendLine();
+
+                                                    if (String.IsNullOrWhiteSpace(mercatorId) && useGenericArticle)
+                                                    {
+                                                        //Article generique
+                                                        mercatorId = "NOPGENERIQ";
+                                                        be.InsertItem(mercatorId, index, 1);
+
+                                                        JObject product = JObject.Parse(WebService.Get(new UrlBuilder("Product").Id((int)i["ProductId"]).BuildQuery()));
+                                                        be.LIGNES.Rows[index]["DESIGNATIO"] = product["Name"].ToString();
+                                                        
+                                                        be.LIGNES.Rows[index]["TAUX_TVA"] = Math.Floor(((i["UnitPriceInclTax"].Value<Decimal>() / i["UnitPriceExclTax"].Value<Decimal>()) - 1) * 100);
+                                                        string[] attributes = i["AttributeDescription"].ToString().Split(new string[] { "<br/>", "<br />" }, StringSplitOptions.None);
+                                                        if (attributes.Length > 0)
+                                                        {
+                                                            foreach (string s in attributes)
+                                                            {
+                                                                int attributeData = be.AppendLine();
+                                                                be.LIGNES.Rows[attributeData]["DESIGNATIO"] = s;
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        //get from db stock using cle_1 then Add ID
+                                                        if (!String.IsNullOrWhiteSpace(mercatorId))
+                                                        {
+                                                            be.InsertItem(mercatorId, index, 1);
+                                                            //be.LIGNES.Rows[index]["PU"] = i["UnitPriceExclTax"].Value<Decimal>();
+                                                        }
+                                                        else
+                                                        {
+                                                            Program.log("Article does not exist in Mercator, you might want to activate the generic article option");
+                                                        }
+                                                    }
+
+
+                                                    //Use price/vat used when the order was placed : might have been some changes in Mercator since then
+                                                    be.LIGNES.Rows[index]["Q"] = i["Quantity"].Value<Double>() /** condit*/ ;
+                                                    be.LIGNES.Rows[index]["PU"] = i["UnitPriceInclTax"].Value<Decimal>();
+                                                    /* * (1 + (i["Remise"].Value<Decimal>() / 100));*/
+                                                }
 	
 	                                            //Shipping tax
 	                                            //TODO: faire un doc avec les étapes de l'installation + vérifications à faire 
@@ -267,8 +306,7 @@ namespace BasicNopSync.Syncers.NopToMercator
 	                                            #endregion
 	
 	                                            be.PIEDS["ID_WEB"] = order["Id"].ToString();
-	                                            be.PIEDS["REFERENCE"] = REF_WEB;
-	
+	                                            be.PIEDS["REFERENCE"] = REF_WEB;	
 	
 	                                            if (be.Save())
 	                                            {
@@ -279,14 +317,13 @@ namespace BasicNopSync.Syncers.NopToMercator
 	                                            }
 	                                            else
 	                                            {
-	                                                //Erreur                                                
-	                                                return false;
-	
-	                                            }
-	
+                                                    //Erreur                                                
+                                                    Program.log(be.LastError);
+	                                                return false;	
+	                                            }	
 	                                        }
-	                                        //}
-										}
+                                            //}
+                                        }
                                     }
                                 }
                                 catch (Exception e)
@@ -307,6 +344,15 @@ namespace BasicNopSync.Syncers.NopToMercator
                                 foreach (JToken o in orders)
                                 {
                                     int oId = (int)o["Id"];
+                                    
+                                    string synced = WebService.Get(new UrlBuilder(WebApiEntities.GENERIC_ATTRIBUTE).FilterEq("KeyGroup",ENTITY).FilterEq("Key",KEY_SYNCED).FilterEq("EntityId",oId).BuildQuery());
+                                    JToken[] syncedToken = ParserJSon.ParseResultToJTokenList(synced);
+
+                                    if (syncedToken.Length == 0)
+                                        continue;
+                                    if (syncedToken[0]["Value"].ToString() == "0")
+                                        continue;
+
                                     PiedsV piedsV = new PiedsV();
                                     bool exists = piedsV.Read(oId, "ID_WEB");
 
